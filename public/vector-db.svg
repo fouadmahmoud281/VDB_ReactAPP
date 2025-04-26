@@ -1,0 +1,26 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Database ellipses -->
+  <ellipse cx="16" cy="9" rx="12" ry="5" stroke="#4466ff" stroke-width="2" fill="none" />
+  
+  <!-- Database body -->
+  <path d="M4 9v14c0 2.761 5.373 5 12 5s12-2.239 12-5V9" stroke="#4466ff" stroke-width="2" fill="none" />
+  
+  <!-- Middle connector line -->
+  <path d="M4 16c0 2.761 5.373 5 12 5s12-2.239 12-5" stroke="#4466ff" stroke-width="2" fill="none" opacity="0.6" />
+  
+  <!-- Vector points -->
+  <circle cx="10" cy="14" r="1.5" fill="#4466ff" />
+  <circle cx="22" cy="14" r="1.5" fill="#4466ff" />
+  <circle cx="16" cy="20" r="1.5" fill="#4466ff" />
+  <circle cx="12" cy="23" r="1.5" fill="#4466ff" />
+  <circle cx="20" cy="23" r="1.5" fill="#4466ff" />
+  
+  <!-- Vector connections -->
+  <line x1="10" y1="14" x2="16" y2="20" stroke="#4466ff" stroke-width="1" opacity="0.8" />
+  <line x1="22" y1="14" x2="16" y2="20" stroke="#4466ff" stroke-width="1" opacity="0.8" />
+  <line x1="16" y1="20" x2="12" y2="23" stroke="#4466ff" stroke-width="1" opacity="0.8" />
+  <line x1="16" y1="20" x2="20" y2="23" stroke="#4466ff" stroke-width="1" opacity="0.8" />
+  
+  <!-- Analytics line chart -->
+  <polyline points="7,18 11,15 15,16 20,12 25,14" stroke="#4466ff" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.9" />
+</svg>

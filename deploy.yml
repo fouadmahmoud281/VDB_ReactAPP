@@ -1,0 +1,109 @@
+---
+# deploy.yml - Ansible playbook for deploying the Vector Database application
+
+- name: Deploy Vector Database Application
+  hosts: all
+  become: yes
+  vars:
+    app_name: vector-database-app
+    app_directory: "/opt/{{ app_name }}"
+    app_user: "{{ ansible_user }}"
+    app_group: "{{ ansible_user }}"
+    # Default API base URL - override this in your inventory or group_vars
+    api_base_url: "https://embeddings100.cloud-stacks.com"
+    # Docker image name and tag
+    docker_image_name: "{{ app_name }}"
+    docker_image_tag: "latest"
+    # Docker container port mapping
+    container_port: 80
+    host_port: 8080
+
+  tasks:
+    - name: Install required packages
+      package:
+        name:
+          - git
+          - docker.io
+          - python3-docker
+        state: present
+
+    - name: Ensure Docker service is running
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Create application directory
+      file:
+        path: "{{ app_directory }}"
+        state: directory
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+        mode: '0755'
+
+    - name: Clone/update application repository
+      git:
+        repo: "{{ git_repo_url | default('https://github.com/yourusername/vector-database-app.git') }}"
+        dest: "{{ app_directory }}"
+        version: "{{ git_branch | default('main') }}"
+        update: yes
+      become_user: "{{ app_user }}"
+      register: git_clone
+
+    - name: Create .env file with environment configuration
+      template:
+        src: templates/env.j2
+        dest: "{{ app_directory }}/.env"
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+        mode: '0644'
+      vars:
+        env_vars:
+          VITE_API_BASE_URL: "{{ api_base_url }}"
+
+    - name: Build Docker image with environment variables
+      docker_image:
+        name: "{{ docker_image_name }}"
+        tag: "{{ docker_image_tag }}"
+        build:
+          path: "{{ app_directory }}"
+          pull: yes
+          args:
+            VITE_API_BASE_URL: "{{ api_base_url }}"
+        source: build
+        force_source: "{{ git_clone.changed }}"
+      register: docker_build
+
+    - name: Remove existing container if it exists
+      docker_container:
+        name: "{{ app_name }}"
+        state: absent
+      ignore_errors: yes
+
+    - name: Run Docker container
+      docker_container:
+        name: "{{ app_name }}"
+        image: "{{ docker_image_name }}:{{ docker_image_tag }}"
+        state: started
+        restart_policy: unless-stopped
+        ports:
+          - "{{ host_port }}:{{ container_port }}"
+        env:
+          VITE_API_BASE_URL: "{{ api_base_url }}"
+
+    - name: Wait for application to be available
+      uri:
+        url: "http://localhost:{{ host_port }}"
+        status_code: 200
+      register: result
+      until: result.status == 200
+      retries: 10
+      delay: 5
+      ignore_errors: yes
+
+    - name: Display deployment information
+      debug:
+        msg: |
+          Vector Database Application has been deployed!
+          Access the application at: http://{{ ansible_host }}:{{ host_port }}
+          API Base URL: {{ api_base_url }}
