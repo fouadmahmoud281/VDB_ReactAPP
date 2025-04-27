@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import styled from '@emotion/styled'
 import axios from 'axios'
 import { THEME } from '../../theme'
@@ -10,8 +10,6 @@ import * as pdfjs from 'pdfjs-dist'
 // Set the PDF.js worker source
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`
 
-// Import the config
-import { config } from '../../config';
 
 // Use the API base URL from config
 const API_BASE_URL = '/api';
@@ -35,37 +33,8 @@ const PageTitle = styled.h1`
   display: inline-block;
 `
 
-const ValueProposition = styled.div`
-  display: flex;
-  gap: 20px;
-  margin: 30px 0;
-  
-  @media (max-width: 768px) {
-    flex-direction: column;
-  }
-`
 
-const ValueCard = styled.div`
-  background: linear-gradient(135deg, rgba(75, 86, 210, 0.1), rgba(75, 86, 210, 0.05));
-  border-radius: 10px;
-  padding: 20px;
-  flex: 1;
-  border-left: 3px solid ${THEME.primaryColor};
-  
-  h3 {
-    margin-top: 0;
-    margin-bottom: 10px;
-    font-size: 1.1rem;
-    color: white;
-  }
-  
-  p {
-    margin: 0;
-    line-height: 1.5;
-    opacity: 0.8;
-    font-size: 0.95rem;
-  }
-`
+
 
 const Card = styled.div`
   background-color: ${THEME.secondaryBgColor};
@@ -233,13 +202,7 @@ const LoadingSpinner = styled.div`
   }
 `
 
-const SecondaryButton = styled(Button)`
-  background-color: rgba(255, 255, 255, 0.1);
-  
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.15);
-  }
-`
+
 
 const ExpanderHeader = styled.button`
   background-color: #262b36;
@@ -675,37 +638,6 @@ const CloseButton = styled(Button)`
   }
 `
 
-const ApiStatusBadge = styled.div<{ isOnline: boolean }>`
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  border-radius: 16px;
-  font-size: 0.8rem;
-  font-weight: 500;
-  margin-left: 12px;
-  background-color: ${props => props.isOnline 
-    ? 'rgba(76, 175, 80, 0.1)' 
-    : 'rgba(244, 67, 54, 0.1)'
-  };
-  color: ${props => props.isOnline 
-    ? '#4CAF50' 
-    : '#F44336'
-  };
-  
-  &::before {
-    content: '';
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background-color: ${props => props.isOnline 
-      ? '#4CAF50' 
-      : '#F44336'
-    };
-  }
-`
-
 const ErrorMessage = styled.div`
   background-color: rgba(244, 67, 54, 0.1);
   border-left: 3px solid #F44336;
@@ -1076,7 +1008,6 @@ const IndexDocuments: React.FC = () => {
   // Modal state
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [modalData, setModalData] = useState({ count: 0, collection: '' });
-  const [apiStatus, setApiStatus] = useState<boolean | null>(null);
   const [apiError, setApiError] = useState<string | null>(null);
   
   // Business-friendly state additions
@@ -1091,14 +1022,15 @@ const IndexDocuments: React.FC = () => {
   useEffect(() => {
     const checkApiStatus = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/status`);
-        setApiStatus(response.data?.status === 'ok');
+        // Just make the request without storing the response
+        await axios.get(`${API_BASE_URL}/status`);
+        // No status state updates, just checking if API is reachable
       } catch (error) {
         console.warn('API status check failed:', error);
-        setApiStatus(false);
+        console.warn('API status check failed - API may be unavailable');
       }
     };
-    
+  
     checkApiStatus();
   }, []);
   
@@ -1483,18 +1415,6 @@ const IndexDocuments: React.FC = () => {
   };
   
   // Get recommended chunk size based on content type
-  const getRecommendedChunkSize = (contentType: string) => {
-    switch(contentType) {
-      case 'technical':
-        return 2000;
-      case 'marketing':
-        return 1000;
-      case 'legal':
-        return 3000;
-      default:
-        return 1500;
-    }
-  };
   
   return (
     <PageContainer>

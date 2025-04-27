@@ -2,6 +2,8 @@ import { useState, useEffect, useMemo, lazy, Suspense } from 'react';
 import styled from '@emotion/styled';
 import { motion, AnimatePresence } from 'framer-motion';
 import { THEME } from '../../theme';
+import React from 'react';
+
 
 // Import the new enhanced Header
 import Header from './Header';
@@ -19,7 +21,7 @@ const DashboardContainer = styled.div`
   max-width: 100%;
   margin: 0 auto;
   padding: clamp(20px, 4vw, 40px);
-  background: var(--bg-gradient, linear-gradient(135deg, ${THEME.backgroundColor} 0%, #1a1d2b 100%));
+  background: var(--bg-gradient, linear-gradient(135deg, ${THEME.bgColor} 0%, #1a1d2b 100%));
   min-height: 100vh;
   position: relative;
   color: ${THEME.textColor};
@@ -90,7 +92,7 @@ const StatusTitle = styled.h2`
   font-size: clamp(1rem, 1.5vw, 1.25rem);
   display: flex;
   align-items: center;
-  color: ${THEME.headingColor || THEME.textColor};
+  color: ${THEME.primaryColor || THEME.textColor};
   position: relative;
   
   &::before {
@@ -163,7 +165,7 @@ const LoadingScreen = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: ${THEME.backgroundColor};
+  background-color: ${THEME.bgColor};
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -197,7 +199,7 @@ const SystemStatusBar = styled.div`
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: ${THEME.backgroundColor};
+  background-color: ${THEME.bgColor};
   padding: 6px 16px;
   font-size: 0.8rem;
   display: flex;
@@ -438,9 +440,12 @@ interface TabData {
   key: string;
   title: string;
   description: string;
-  component: JSX.Element;
+  component: React.ReactNode;
   icon: string;
 }
+
+
+
 
 const Dashboard: React.FC = () => {
   // State management

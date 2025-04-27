@@ -2,8 +2,10 @@ import { useState, useCallback, useMemo, useEffect, useRef } from 'react'
 import styled from '@emotion/styled'
 import axios from 'axios'
 import { THEME } from '../../theme'
-import { config } from '../../config'
-import { debounce } from 'lodash'
+import { debounce } from 'lodash';
+// Add type definitions
+// Add type definitions for lodash
+// Remove @types/lodash import since types are included in lodash package
 
 // Constants
 const SCORE_THRESHOLDS = {
@@ -595,7 +597,7 @@ const StatusBadge = styled.div`
   }
 `
 
-const InfoBadge = styled.div`
+/*const InfoBadge = styled.div`
   background-color: rgba(33, 150, 243, 0.1);
   color: #2196f3;
   font-size: 0.85rem;
@@ -604,7 +606,7 @@ const InfoBadge = styled.div`
   display: inline-flex;
   align-items: center;
   margin-left: 6px;
-`
+`*/
 
 const TemplateButton = styled.button`
   background-color: #303540;
@@ -1725,7 +1727,7 @@ const BusinessSearchDashboard: React.FC = () => {
                       y={dot.y} 
                       size={dot.size} 
                       isQuery={dot.isQuery}
-                      onMouseEnter={() => handleDotHover(dot.resultIndex)}
+                      onMouseEnter={() => handleDotHover('resultIndex' in dot ? dot.resultIndex : undefined)}
                       onMouseLeave={() => setShowTooltip(false)}
                     />
                   ))}

@@ -362,25 +362,25 @@ const Navigation: React.FC<NavigationProps> = ({
       ref={containerRef}
     >
       {tabs.map((tab, index) => (
-        <NavCard 
-          key={index} 
-          active={activeTab === index}
-          disabled={tab.disabled}
-          initial="inactive"
-          animate={tab.disabled ? "disabled" : activeTab === index ? "active" : "inactive"}
-          whileHover={!tab.disabled && "hover"}
-          variants={cardVariants}
-          layout
-          transition={{
-            layout: { type: "spring", stiffness: 300, damping: 30 }
-          }}
-          style={{
-            // Stagger entrance of cards
-            opacity: isRendered ? 1 : 0,
-            transform: isRendered ? 'translateY(0)' : 'translateY(20px)',
-            transition: `opacity 0.5s ease ${index * 0.1}s, transform 0.5s ease ${index * 0.1}s`
-          }}
-        >
+          <NavCard 
+            key={index} 
+            active={activeTab === index}
+            disabled={tab.disabled}
+            initial="inactive"
+            animate={tab.disabled ? "disabled" : activeTab === index ? "active" : "inactive"}
+            {...(!tab.disabled && { whileHover: "hover" })}
+            variants={cardVariants}
+            layout
+            transition={{
+              layout: { type: "spring", stiffness: 300, damping: 30 }
+            }}
+            style={{
+              // Stagger entrance of cards
+              opacity: isRendered ? 1 : 0,
+              transform: isRendered ? 'translateY(0)' : 'translateY(20px)',
+              transition: `opacity 0.5s ease ${index * 0.1}s, transform 0.5s ease ${index * 0.1}s`
+            }}
+          >
           <CardButton
             onClick={() => !tab.disabled && onTabChange(index)}
             role="tab"

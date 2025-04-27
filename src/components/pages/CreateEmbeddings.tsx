@@ -2,7 +2,6 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import styled from '@emotion/styled';
 import axios from 'axios';
 import { THEME } from '../../theme';
-import { config } from '../../config';
 import { AnimatePresence, motion } from 'framer-motion';
 
 const PageContainer = styled.div`
@@ -110,27 +109,7 @@ const TextArea = styled.textarea`
   }
 `;
 
-const TextInput = styled.input`
-  width: 100%;
-  background-color: #1e232d;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  padding: 12px 14px;
-  color: ${THEME.textColor};
-  font-family: inherit;
-  font-size: 0.95rem;
-  transition: all 0.2s ease;
-  
-  &:focus {
-    outline: none;
-    border-color: ${THEME.primaryColor};
-    box-shadow: 0 0 0 3px rgba(75, 86, 210, 0.25);
-  }
-  
-  &::placeholder {
-    color: rgba(255, 255, 255, 0.4);
-  }
-`;
+
 
 const Button = styled.button`
   background-color: ${THEME.primaryColor};
@@ -651,15 +630,7 @@ const ChartBar = styled.div<{ height: number }>`
   transition: height 0.5s cubic-bezier(0.2, 0, 0.2, 1);
 `;
 
-const SearchForm = styled.div`
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-  
-  @media (max-width: 768px) {
-    flex-direction: column;
-  }
-`;
+
 
 const Tooltip = styled.div`
   position: absolute;
@@ -976,11 +947,8 @@ const CreateEmbeddings: React.FC = () => {
   const [compareItem1, setCompareItem1] = useState<EmbeddingItem | null>(null);
   const [compareItem2, setCompareItem2] = useState<EmbeddingItem | null>(null);
   const [similarityScore, setSimilarityScore] = useState<number | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [filteredEmbeddings, setFilteredEmbeddings] = useState<EmbeddingItem[]>([]);
   const [showChart, setShowChart] = useState(false);
-  const [searchInProgress, setSearchInProgress] = useState(false);
-  const [modelType, setModelType] = useState('sentence-transformer-384');
+  const modelType = 'sentence-transformer-384';
   const [tooltipVisible, setTooltipVisible] = useState(false);
   const [tooltipText, setTooltipText] = useState('');
   const [selectedTemplate, setSelectedTemplate] = useState('');
@@ -1150,9 +1118,7 @@ const CreateEmbeddings: React.FC = () => {
         }
         
         // Update filtered embeddings if there's a search query
-        if (searchQuery) {
-          handleSearchEmbeddings();
-        }
+
         
         // Advance to the next step
         advanceStep();
@@ -1163,8 +1129,8 @@ const CreateEmbeddings: React.FC = () => {
     } catch (error) {
       console.error('Error creating embeddings:', error);
       setErrorMessage(
-        error.response?.data?.error || 
-        error.message || 
+(error as any).response?.data?.error ||
+(error as Error).message ||
         'Failed to create embeddings. Please try again.'
       );
     } finally {
@@ -1255,28 +1221,6 @@ const CreateEmbeddings: React.FC = () => {
     }
   };
   
-  const handleSearchEmbeddings = () => {
-    if (!searchQuery.trim()) {
-      setFilteredEmbeddings([]);
-      return;
-    }
-    
-    setSearchInProgress(true);
-    
-    // Simple text search for now, in real app this would use embeddings-based search
-    const results = embeddingsHistory.filter(item => 
-      item.text.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-    
-    setFilteredEmbeddings(results);
-    setSearchInProgress(false);
-    
-    // Advance to the next step if results are found
-    if (results.length > 0) {
-      advanceStep();
-    }
-  };
-  
   const handleDeleteEmbedding = (index: number) => {
     const updatedHistory = [...embeddingsHistory];
     updatedHistory.splice(index, 1);
@@ -1285,18 +1229,6 @@ const CreateEmbeddings: React.FC = () => {
     showSuccessMessage('Embedding deleted');
     
     // Update filtered results if needed
-    if (searchQuery) {
-      setFilteredEmbeddings(prevFiltered => {
-        const newFiltered = [...prevFiltered];
-        const filteredIndex = newFiltered.findIndex(item => 
-          item === embeddingsHistory[index]
-        );
-        if (filteredIndex !== -1) {
-          newFiltered.splice(filteredIndex, 1);
-        }
-        return newFiltered;
-      });
-    }
   };
   
   const handleExportAllEmbeddings = () => {
@@ -1379,8 +1311,6 @@ const CreateEmbeddings: React.FC = () => {
   };
   
   // Display embeddings list based on search or full history
-  const displayEmbeddings = searchQuery.trim() ? filteredEmbeddings : embeddingsHistory;
-  
   // Calculate estimated ROI
   const timeSavedHours = calculateTimeSavings();
   const averageHourlyRate = 25; // Assume $25/hour average employee cost
@@ -2050,7 +1980,7 @@ const CreateEmbeddings: React.FC = () => {
       </Card>
       
 
-      {displayEmbeddings.length > 0 && (
+      {embeddingsHistory.length > 0 && (
         <>
           <SectionTitle>
             Business Content Repository
@@ -2064,11 +1994,10 @@ const CreateEmbeddings: React.FC = () => {
                 </svg>
                 Export All
               </ActionButton>
-              {searchQuery && <Badge type="info">{filteredEmbeddings.length} results</Badge>}
             </SectionTitleControls>
           </SectionTitle>
           
-          {displayEmbeddings.map((item, index) => (
+          {embeddingsHistory.map((item, index) => (
             <Card 
               key={index}
               initial={{ opacity: 0, y: 20 }}
@@ -2097,7 +2026,7 @@ const CreateEmbeddings: React.FC = () => {
                 
                 <EmbeddingVisualizer>
                   <HeatmapGrid>
-                    {item.embedding.slice(0, 256).map((value, i) => (
+                    {item.embedding.slice(0, 256).map((value: number, i: number) => (
                       <HeatmapCell 
                         key={i} 
                         value={value} 

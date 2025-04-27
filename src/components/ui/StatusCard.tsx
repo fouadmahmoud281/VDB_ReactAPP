@@ -57,8 +57,10 @@ const StatusValue = styled.div<{ status: 'online' | 'offline' | 'warning' }>`
 
 interface StatusCardProps {
   label: string;
-  status: 'online' | 'offline' | 'warning';
-  statusText?: string;
+  status: "online" | "offline" | "warning"; // Or whatever status types you support
+  statusText: string;
+  icon: string;
+  value?: string; // Add this line, making it optional with ?
 }
 
 const StatusCard: React.FC<StatusCardProps> = ({ 

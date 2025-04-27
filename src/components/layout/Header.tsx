@@ -1,8 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
 import { keyframes } from '@emotion/react';
-import { THEME } from '../../theme';
-import type { JSX } from 'react';
 
 // Animation keyframes
 const glowPulse = keyframes`
@@ -11,10 +9,6 @@ const glowPulse = keyframes`
   100% { box-shadow: 0 0 8px rgba(80, 100, 255, 0.2), 0 0 4px rgba(80, 100, 255, 0.1); }
 `;
 
-const dotAnimation = keyframes`
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 1; }
-`;
 
 const fadeIn = keyframes`
   from { opacity: 0; transform: translateY(10px); }
@@ -134,34 +128,8 @@ const Subtitle = styled.p`
   }
 `;
 
-// Status indicator that shows system is active
-const StatusIndicator = styled.div`
-  display: inline-flex;
-  align-items: center;
-  margin-top: 12px;
-  animation: ${fadeIn} 0.6s ease-out forwards;
-  animation-delay: 0.6s;
-  opacity: 0;
-  animation-fill-mode: forwards;
-  
-  @media (max-width: 600px) {
-    justify-content: center;
-  }
-`;
 
-const StatusDot = styled.div`
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: #4ade80;
-  margin-right: 8px;
-  animation: ${dotAnimation} 2s infinite;
-`;
 
-const StatusText = styled.span`
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.6);
-`;
 
 // Nodes animation for vector database concept
 const Node = styled.div`
@@ -185,7 +153,6 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ className }) => {
-  const [isLoaded, setIsLoaded] = useState(false);
   const logoRef = useRef<HTMLDivElement>(null);
   
   // Generate random nodes for the logo
@@ -207,7 +174,6 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
   ];
   
   useEffect(() => {
-    setIsLoaded(true);
     
     // Apply animations to nodes
     const nodeElements = document.querySelectorAll('.vector-node');
