@@ -823,7 +823,7 @@ const DotContainer = styled.div`
   height: 100%;
 `
 
-const Dot = styled.div<{ x: number; y: number; size: number; isQuery?: boolean }>`
+const Dot = styled.div<{ x: number; y: number; size: number; isQuery?: boolean; resultIndex?: number }>`
   position: absolute;
   width: ${props => props.size}px;
   height: ${props => props.size}px;
@@ -938,6 +938,7 @@ interface SearchResultItem {
     [key: string]: any;
   };
 }
+
 
 interface ApiSearchResponse {
   results: SearchResultItem[];
@@ -1093,7 +1094,7 @@ const BusinessSearchDashboard: React.FC = () => {
       } else {
         throw new Error('Invalid response format from API');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error searching collection:', error);
       setErrorMessage(
         error.response?.data?.error || 
@@ -1127,7 +1128,7 @@ const BusinessSearchDashboard: React.FC = () => {
       limit,
       use_native_search: useNativeSearch,
       score_all_documents: scoreAllDocuments,
-      ...(queryInputMethod === 'text' ? { query_text: queryText } : { query_vector: vectorQuery }),
+      ...(queryInputMethod === 'text' ? { query_text: queryText } : { query_vector: vectorQuery ? (vectorQuery as number[]) : undefined }),
       ...(useNativeSearch ? { ef_param: efParam } : {})
     };
     
