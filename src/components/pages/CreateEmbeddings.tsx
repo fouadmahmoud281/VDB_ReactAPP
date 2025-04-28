@@ -961,8 +961,7 @@ const CreateEmbeddings: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   // API Configuration from centralized config
-  const API_URL = 'https://corsproxy.io/?https://embeddings100.cloud-stacks.com/embed';
-  
+  const API_URL = 'https://api.allorigins.win/raw?url=https://embeddings100.cloud-stacks.com/embed';
   // Load saved data from localStorage on component mount
   useEffect(() => {
     const savedTotal = localStorage.getItem('totalEmbeddings');
@@ -1071,7 +1070,13 @@ const CreateEmbeddings: React.FC = () => {
         : textToProcess.split('\n').filter(text => text.trim());
       
       // Make the actual API call to the embedding service
-      const response = await axios.post(API_URL, textsToEmbed);
+      const response = await axios.post(API_URL, textsToEmbed, {
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+          'Origin': window.location.origin
+        }
+      });
       
       // Process the real API response
       if (response.data && response.data.embeddings) {
