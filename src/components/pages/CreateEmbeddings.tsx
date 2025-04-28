@@ -1072,7 +1072,7 @@ const CreateEmbeddings: React.FC = () => {
       
       // Make the actual API call to the embedding service
       const response = await axios.post(API_URL,  {
-        text: textsToEmbed,},
+        text: textsToEmbed },
         {
         headers: {
           'Content-Type': 'application/json',
