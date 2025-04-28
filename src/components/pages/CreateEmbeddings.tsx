@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import axios from 'axios';
 import { THEME } from '../../theme';
 import { AnimatePresence, motion } from 'framer-motion';
+import { text } from 'stream/consumers';
 
 const PageContainer = styled.div`
   display: flex;
@@ -1070,7 +1071,9 @@ const CreateEmbeddings: React.FC = () => {
         : textToProcess.split('\n').filter(text => text.trim());
       
       // Make the actual API call to the embedding service
-      const response = await axios.post(API_URL, textsToEmbed, {
+      const response = await axios.post(API_URL,  {
+        text: textsToEmbed,},
+        {
         headers: {
           'Content-Type': 'application/json',
           'X-Requested-With': 'XMLHttpRequest',
