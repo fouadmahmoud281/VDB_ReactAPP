@@ -37,7 +37,12 @@ const BUSINESS_USE_CASES = [
 ]
 
 // API Configuration from centralized config
-const API_URL = '/api/search'; // This will be proxied to the configured API base URL
+// ... existing code ...
+
+// API Configuration from centralized config
+const API_URL = `${import.meta.env.VITE_API_BASE_URL}/search`; // Use the environment variable for the base URL
+  
+// ... rest of the code ... // This will be proxied to the configured API base URL
 
 // Styled Components with improved accessibility and transitions optimized for dark mode
 const PageContainer = styled.div`
