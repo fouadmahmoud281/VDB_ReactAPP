@@ -961,7 +961,7 @@ const CreateEmbeddings: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   // API Configuration from centralized config
-  const API_URL = 'https://embeddings100.cloud-stacks.com/embed'; // This will be proxied to the configured API base URL
+  const API_URL = 'https://corsproxy.io/?https://embeddings100.cloud-stacks.com/embed';
   
   // Load saved data from localStorage on component mount
   useEffect(() => {
